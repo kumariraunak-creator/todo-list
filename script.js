@@ -1,10 +1,4 @@
-if ("Notification" in window) {
-  Notification.requestPermission();
-}
-
-let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
-let darkMode = localStorage.getItem("darkMode") === "true";
-
+// =================== ELEMENTS ===================
 const taskInput = document.getElementById("taskInput");
 const dueDate = document.getElementById("dueDate");
 const priority = document.getElementById("priority");
@@ -12,53 +6,31 @@ const taskList = document.getElementById("taskList");
 const counter = document.getElementById("counter");
 const themeToggle = document.getElementById("themeToggle");
 
-if (darkMode) document.body.classList.add("dark");
+const addBtn = document.querySelector(".add-btn");
+const clearBtn = document.querySelector(".clear-btn");
+const sortPriorityBtn = document.getElementById("sortPriority");
+const sortDateBtn = document.getElementById("sortDate");
 
+// =================== DATA ===================
+let tasks = [];
+
+// =================== LOCAL STORAGE ===================
 function saveTasks() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 }
 
-function renderTasks() {
-  taskList.innerHTML = "";
-  let completed = 0;
-
-  tasks.forEach((task, index) => {
-    const li = document.createElement("li");
-    if (task.done) {
-      li.classList.add("completed");
-      completed++;
-    }
-const today = new Date().toISOString().split("T")[0];
-
-if (!task.done && task.date && task.date !== "No date" && task.date < today) {
-  li.classList.add("overdue");
+function loadTasks() {
+  const saved = localStorage.getItem("tasks");
+  if (saved) {
+    tasks = JSON.parse(saved);
+  }
 }
 
-    li.innerHTML = `
-      <input type="checkbox" ${task.done ? "checked" : ""}>
-      <span>${task.text}<br><small>Due: ${task.date}</small></span>
-      <span class="priority ${task.priority}">${task.priority}</span>
-      <button onclick="editTask(${index})">✏️</button>
-      <button onclick="deleteTask(${index})">❌</button>
-    `;
-
-    li.querySelector("input").addEventListener("change", () => {
-      task.done = !task.done;
-      saveTasks();
-      renderTasks();
-    });
-
-    taskList.appendChild(li);
-  });
-
-  counter.innerText = `Pending: ${tasks.length - completed} | Completed: ${completed}`;
+// =================== NOTIFICATIONS ===================
+if ("Notification" in window) {
+  Notification.requestPermission();
 }
-// ===== VARIABLES =====
-const taskInput = document.getElementById("taskInput");
-const addBtn = document.getElementById("addBtn");
-const taskList = document.getElementById("taskList");
 
-// ===== NOTIFICATION FUNCTION (PASTE HERE) =====
 function showNotification(title, body) {
   if (Notification.permission === "granted") {
     new Notification(title, {
@@ -68,6 +40,7 @@ function showNotification(title, body) {
   }
 }
 
+// =================== ADD TASK ===================
 function addTask() {
   if (!taskInput.value || !dueDate.value) return;
 
@@ -78,45 +51,48 @@ function addTask() {
     done: false
   });
 
+  showNotification("Task Added ✅", taskInput.value);
+
   taskInput.value = "";
   dueDate.value = "";
 
   saveTasks();
   renderTasks();
-  showNotification(
-  "Task Added ✅",
-  "Your task has been added successfully"
-);
 }
 
-
+// =================== DELETE TASK ===================
 function deleteTask(index) {
   tasks.splice(index, 1);
   saveTasks();
   renderTasks();
 }
 
+// =================== EDIT TASK ===================
 function editTask(index) {
   const t = tasks[index];
   const newText = prompt("Edit task", t.text);
-  const newDate = prompt("Edit due date (YYYY-MM-DD)", t.date);
-  const newPriority = prompt("Priority: high / medium / low", t.priority);
-
-  if (newText && newDate && newPriority) {
+  if (newText !== null && newText.trim() !== "") {
     t.text = newText;
-    t.date = newDate;
-    t.priority = newPriority;
     saveTasks();
     renderTasks();
   }
 }
 
+// =================== TOGGLE COMPLETE ===================
+function toggleDone(index) {
+  tasks[index].done = !tasks[index].done;
+  saveTasks();
+  renderTasks();
+}
+
+// =================== CLEAR COMPLETED ===================
 function clearCompleted() {
   tasks = tasks.filter(t => !t.done);
   saveTasks();
   renderTasks();
 }
 
+// =================== SORT ===================
 function sortByPriority() {
   const order = { high: 1, medium: 2, low: 3 };
   tasks.sort((a, b) => order[a.priority] - order[b.priority]);
@@ -128,14 +104,73 @@ function sortByDate() {
   renderTasks();
 }
 
-themeToggle.onclick = () => {
+// =================== COUNTER ===================
+function updateCounter() {
+  const completed = tasks.filter(t => t.done).length;
+  const pending = tasks.length - completed;
+  counter.textContent = `Pending: ${pending} | Completed: ${completed}`;
+}
+
+// =================== DUE DATE CHECK ===================
+function checkDueToday() {
+  const today = new Date().toISOString().split("T")[0];
+  tasks.forEach(t => {
+    if (t.date === today && !t.done) {
+      showNotification("Due Today ⏰", t.text);
+    }
+  });
+}
+
+// =================== RENDER ===================
+function renderTasks() {
+  taskList.innerHTML = "";
+
+  tasks.forEach((task, index) => {
+    const li = document.createElement("li");
+    li.className = task.done ? "done" : "";
+
+    li.innerHTML = `
+      <input type="checkbox" ${task.done ? "checked" : ""} onclick="toggleDone(${index})">
+      <div class="task-info">
+        <span class="task-text">${task.text}</span>
+        <small>Due: ${task.date}</small>
+        <span class="tag ${task.priority}">${task.priority}</span>
+      </div>
+      <button onclick="editTask(${index})">✏️</button>
+      <button onclick="deleteTask(${index})">❌</button>
+    `;
+
+    taskList.appendChild(li);
+  });
+
+  updateCounter();
+}
+
+// =================== DARK MODE ===================
+function loadTheme() {
+  const theme = localStorage.getItem("theme");
+  if (theme === "dark") {
+    document.body.classList.add("dark");
+  }
+}
+
+themeToggle.addEventListener("click", () => {
   document.body.classList.toggle("dark");
-  localStorage.setItem("darkMode", document.body.classList.contains("dark"));
-};
+  localStorage.setItem(
+    "theme",
+    document.body.classList.contains("dark") ? "dark" : "light"
+  );
+});
 
-document.querySelector(".add-btn").onclick = addTask;
-document.querySelector(".clear-btn").onclick = clearCompleted;
-document.getElementById("sortPriority").onclick = sortByPriority;
-document.getElementById("sortDate").onclick = sortByDate;
+// =================== EVENTS ===================
+addBtn.addEventListener("click", addTask);
+clearBtn.addEventListener("click", clearCompleted);
+sortPriorityBtn.addEventListener("click", sortByPriority);
+sortDateBtn.addEventListener("click", sortByDate);
 
+// =================== INIT ===================
+loadTasks();
+loadTheme();
 renderTasks();
+checkDueToday();
+
