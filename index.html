@@ -1,55 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Colorful TODO List</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#6c63ff">
+  <meta charset="UTF-8" />
+  <title>My TODO List</title>
 
-  <link rel="stylesheet" href="style.css">
+  <!-- Responsive -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Theme Color (PWA) -->
+  <meta name="theme-color" content="#6c63ff" />
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json" />
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
+  <div class="container">
 
-<div class="container">
-  <h2>🌈 My TODO List</h2>
+    <!-- Header -->
+    <h2>🌈 My TODO List</h2>
 
-  <button id="themeToggle">🌙 Dark Mode</button>
+    <!-- Dark Mode -->
+    <button id="themeToggle">🌙 Dark Mode</button>
 
-  <input type="text" id="taskInput" placeholder="Enter a task">
-  <input type="date" id="dueDate">
+    <!-- Task Input -->
+    <input
+      type="text"
+      id="taskInput"
+      placeholder="Enter a task"
+    />
 
-  <select id="priority">
-    <option value="high">High</option>
-    <option value="medium" selected>Medium</option>
-    <option value="low">Low</option>
-  </select>
+    <!-- Due Date -->
+    <input type="date" id="dueDate" />
 
-  <button class="add-btn">Add</button>
+    <!-- Priority -->
+    <select id="priority">
+      <option value="high">High</option>
+      <option value="medium" selected>Medium</option>
+      <option value="low">Low</option>
+    </select>
 
-  <div class="sort-bar">
-    <button id="sortPriority">Sort by Priority</button>
-    <button id="sortDate">Sort by Date</button>
+    <!-- Add Button -->
+    <button class="add-btn">Add</button>
+
+    <!-- Sort Buttons -->
+    <div class="sort-bar">
+      <button id="sortPriority">Sort by Priority</button>
+      <button id="sortDate">Sort by Date</button>
+    </div>
+
+    <!-- Counter -->
+    <p id="counter">Pending: 0 | Completed: 0</p>
+
+    <!-- Task List -->
+    <ul id="taskList"></ul>
+
+    <!-- Clear Completed -->
+    <button class="clear-btn">🧹 Clear Completed</button>
+
   </div>
 
-  <p id="counter">Pending: 0 | Completed: 0</p>
+  <!-- MAIN JS FILE -->
+  <script src="script.js"></script>
 
-  <ul id="taskList"></ul>
-
-  <button class="clear-btn">🧹 Clear Completed</button>
-</div>
-
-<script src="script.js"></script>
+  <!-- SERVICE WORKER (PWA) -->
   <script>
-  if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-      navigator.serviceWorker
-        .register("service-worker.js")
-        .then(() => console.log("Service Worker Registered"))
-        .catch(err => console.log("SW failed", err));
-    });
-  }
-</script>
-
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then(() => console.log("Service Worker Registered"))
+          .catch(err => console.log("SW failed:", err));
+      });
+    }
+  </script>
 </body>
 </html>
