@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Colorful TODO List</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h2>🌈 My TODO List</h2>
+
+  <button id="themeToggle">🌙 Dark Mode</button>
+
+  <input type="text" id="taskInput" placeholder="Enter a task">
+  <input type="date" id="dueDate">
+
+  <select id="priority">
+    <option value="high">High</option>
+    <option value="medium" selected>Medium</option>
+    <option value="low">Low</option>
+  </select>
+
+  <button class="add-btn">Add</button>
+
+  <div class="sort-bar">
+    <button id="sortPriority">Sort by Priority</button>
+    <button id="sortDate">Sort by Date</button>
+  </div>
+
+  <p id="counter">Pending: 0 | Completed: 0</p>
+
+  <ul id="taskList"></ul>
+
+  <button class="clear-btn">🧹 Clear Completed</button>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
