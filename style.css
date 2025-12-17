@@ -1,0 +1,100 @@
+body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+body.dark {
+  background: #111;
+}
+
+.container {
+  background: #fff;
+  width: 330px;
+  padding: 20px;
+  border-radius: 15px;
+}
+
+body.dark .container {
+  background: #222;
+  color: #fff;
+}
+
+input, select, button {
+  width: 100%;
+  margin: 6px 0;
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+}
+
+.add-btn {
+  background: #4facfe;
+  color: white;
+}
+
+.sort-bar {
+  display: flex;
+  gap: 5px;
+}
+
+.sort-bar button {
+  flex: 1;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f2f2f2;
+  padding: 6px;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+body.dark li {
+  background: #333;
+}
+
+li.completed span {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.priority {
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  color: white;
+}
+
+.high { background: red; }
+.medium { background: orange; }
+.low { background: green; }
+
+.clear-btn {
+  background: orange;
+  margin-top: 10px;
+}
+/* Overdue task highlight */
+li.overdue {
+  border-left: 6px solid #e53935;
+  background: rgba(229, 57, 53, 0.15);
+}
+
+li.overdue .task-text {
+  color: #e53935;
+  font-weight: 600;
+}
+
+.dark li.overdue {
+  background: rgba(229, 57, 53, 0.25);
+}
