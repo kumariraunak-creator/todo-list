@@ -1,3 +1,7 @@
+if ("Notification" in window) {
+  Notification.requestPermission();
+}
+
 let tasks = JSON.parse(localStorage.getItem("tasks")) || [];
 let darkMode = localStorage.getItem("darkMode") === "true";
 
@@ -49,6 +53,20 @@ if (!task.done && task.date && task.date !== "No date" && task.date < today) {
 
   counter.innerText = `Pending: ${tasks.length - completed} | Completed: ${completed}`;
 }
+// ===== VARIABLES =====
+const taskInput = document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const taskList = document.getElementById("taskList");
+
+// ===== NOTIFICATION FUNCTION (PASTE HERE) =====
+function showNotification(title, body) {
+  if (Notification.permission === "granted") {
+    new Notification(title, {
+      body: body,
+      icon: "icon-192.png"
+    });
+  }
+}
 
 function addTask() {
   if (!taskInput.value || !dueDate.value) return;
@@ -65,7 +83,12 @@ function addTask() {
 
   saveTasks();
   renderTasks();
+  showNotification(
+  "Task Added ✅",
+  "Your task has been added successfully"
+);
 }
+
 
 function deleteTask(index) {
   tasks.splice(index, 1);
